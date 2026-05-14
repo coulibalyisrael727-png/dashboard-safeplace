@@ -1,0 +1,20 @@
+[build]
+  command = "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+  publish = "staticfiles"
+
+[build.environment]
+  DJANGO_SETTINGS_MODULE = "dashboard_project.settings"
+  DJANGO_DEBUG = "False"
+  ALLOWED_HOSTS = "dashboard-safeplace.netlify.app,localhost,127.0.0.1"
+  SECRET_KEY = "django-insecure-production-key-change-this-2026-05-14"
+  MOCK_API_DATA = "True"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/django"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/django"
+  status = 200

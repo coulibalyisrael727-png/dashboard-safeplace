@@ -1,3 +1,50 @@
+# Déploiement sur Netlify
+
+## Pré-requis
+- Avoir un compte Netlify
+- Un repo GitHub connecté à Netlify
+
+## Étapes
+
+1. Connecter ton repo GitHub à Netlify
+2. Netlify détectera automatiquement la configuration via `netlify.toml`
+3. Le déploiement se lance automatiquement
+
+## Configuration Netlify
+Le fichier `netlify.toml` configure :
+- Build command : installation des dépendances et collecte des fichiers statiques
+- Publish directory : `staticfiles/`
+- Environment variables
+- Redirects vers la fonction serverless
+
+## Variables d'environnement
+Définies dans `netlify.toml` :
+- `DJANGO_SETTINGS_MODULE` : `dashboard_project.settings`
+- `DJANGO_DEBUG` : `False`
+- `ALLOWED_HOSTS` : domaine Netlify + localhost
+- `SECRET_KEY` : clé de production
+- `MOCK_API_DATA` : `True` (données fictives)
+
+## Fonction Serverless
+- `netlify/functions/django.py` : fonction qui sert l'application Django
+- Toutes les routes sont redirigées vers cette fonction
+
+## Fichiers statiques
+- Servis depuis `staticfiles/`
+- Collectés automatiquement lors du build
+
+## Test du déploiement
+Après déploiement, teste :
+- `https://ton-domaine.netlify.app/test/` (endpoint de test)
+- `https://ton-domaine.netlify.app/` (dashboard principal)
+
+## Notes importantes
+- Netlify utilise des fonctions serverless pour Django
+- Les données sont mockées (MOCK_API_DATA=True)
+- Pour connecter à l'API réelle, change MOCK_API_DATA=False et configure MAIN_API_URL
+
+---
+
 # Déploiement sur Railway
 
 ## Pré-requis
@@ -7,7 +54,7 @@
 ## Étapes
 
 1. Créer un dépôt GitHub pour `dashboard-service`
-2. Dans le dossier `dashboard-service`: 
+2. Dans le dossier `dashboard-service`:
    ```powershell
    cd 'C:\Users\couli\Desktop\Nouveau dossier (3)\dashboard-service'
    git remote add origin https://github.com/<ton-utilisateur>/<repo-dashboard>.git
@@ -25,8 +72,8 @@ Ajouter ces variables dans Railway :
 - `DJANGO_SECRET_KEY` : une clé secrète forte
 - `DJANGO_DEBUG` : `False`
 - `ALLOWED_HOSTS` : `*` ou le domaine Railway
-- `MAIN_API_URL` : l’URL publique de l’API principale, par exemple `https://mon-app-principale.railway.app/api/v1/`
-- `MAIN_SITE_URL` : l’URL publique de l’application principale, par exemple `https://mon-app-principale.railway.app`
+- `MAIN_API_URL` : l'URL publique de l'API principale, par exemple `https://mon-app-principale.railway.app/api/v1/`
+- `MAIN_SITE_URL` : l'URL publique de l'application principale, par exemple `https://mon-app-principale.railway.app`
 
 ## Notes importantes
 - Le projet utilise actuellement SQLite (`db.sqlite3`). Pour un déploiement stable, il est préférable de migrer vers PostgreSQL ou une base de données managée.
@@ -44,33 +91,3 @@ python manage.py migrate
 python manage.py collectstatic --noinput
 python manage.py runserver 8001
 ```
-
----
-
-# Déploiement sur Vercel
-
-## Pré-requis
-- Avoir un compte Vercel
-- Un repo GitHub connecté à Vercel
-
-## Étapes
-
-1. Connecter ton repo GitHub à Vercel
-2. Vercel détectera automatiquement la configuration via `vercel.json` et `api/index.py`
-3. Le déploiement se lance automatiquement
-
-## Variables d'environnement sur Vercel
-Dans les settings du projet Vercel :
-
-- `DJANGO_SETTINGS_MODULE` : `dashboard_project.settings`
-- `DJANGO_DEBUG` : `False`
-- `ALLOWED_HOSTS` : `dashboard-safeplace-4o77xo41w-coulibalyisrael727-pngs-projects.vercel.app,localhost,127.0.0.1`
-- `SECRET_KEY` : une clé secrète forte (ou utiliser `@django-secret-key` pour une variable secrète)
-- `MAIN_API_URL` : l'URL publique de l'API principale
-- `MAIN_SITE_URL` : l'URL publique de l'application principale
-
-## Notes importantes pour Vercel
-- Vercel utilise des fonctions serverless, donc SQLite peut poser des problèmes de persistance
-- Pour la production, envisager une base de données externe (PostgreSQL)
-- Les fichiers statiques sont servis via `WhiteNoise`
-- Le fichier `api/index.py` est le point d'entrée pour Vercel

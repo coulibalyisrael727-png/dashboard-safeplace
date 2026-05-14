@@ -1,0 +1,2 @@
+# Netlify redirects for Django static files
+/static/* /static/:splat 200
