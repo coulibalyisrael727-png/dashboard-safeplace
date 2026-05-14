@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "dashboard_project/wsgi.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "dashboard_project/wsgi.py"
+    }
+  ],
+  "env": {
+    "DJANGO_SETTINGS_MODULE": "dashboard_project.settings",
+    "DJANGO_DEBUG": "False",
+    "ALLOWED_HOSTS": "dashboard-safeplace-4o77xo41w-coulibalyisrael727-pngs-projects.vercel.app,localhost,127.0.0.1",
+    "SECRET_KEY": "@django-secret-key"
+  }
+}
