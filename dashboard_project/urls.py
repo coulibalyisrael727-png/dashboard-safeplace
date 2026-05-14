@@ -33,4 +33,7 @@ urlpatterns = [
 
     # Health check
     path('health/', views.health_check, name='health_check'),
+
+    # Test endpoint for Vercel
+    path('test/', views.test_vercel, name='test_vercel'),
 ]
