@@ -9,11 +9,7 @@ sys.path.insert(0, str(BASE_DIR))
 # Set the Django settings module
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dashboard_project.settings')
 
-# Setup Django
-import django
-django.setup()
-
-# Import the WSGI application
+# Import the WSGI application directly
 from dashboard_project.wsgi import application
 
 # Vercel expects the app to be named 'app'
