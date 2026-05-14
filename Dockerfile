@@ -13,5 +13,6 @@ COPY . .
 RUN python manage.py collectstatic --noinput
 
 EXPOSE 8001
+ENV PORT=8001
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8001"]
+CMD ["sh", "-c", "gunicorn dashboard_project.wsgi:application --bind 0.0.0.0:${PORT}"]
