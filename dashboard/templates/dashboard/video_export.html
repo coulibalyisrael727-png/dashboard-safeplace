@@ -2,7 +2,7 @@
 
 {% block title %}Export Vidéo — Dashboard{% endblock %}
 {% block page_title %}Export Vidéo{% endblock %}
-{% block page_subtitle %}Ajoutez une vidéo YouTube au site principal{% endblock %}
+{% block page_subtitle %}Ajoutez une vidéo depuis votre galerie ou YouTube{% endblock %}
 
 {% block content %}
 <div class="p-4 md:p-8 relative z-10">
@@ -18,13 +18,13 @@
                 </div>
                 <div>
                     <h2 class="font-heading font-bold text-white text-xl">Ajouter une Vidéo</h2>
-                    <p class="text-white/70 text-sm font-medium mt-0.5">La vidéo sera publiée directement sur la page Vidéos</p>
+                    <p class="text-white/70 text-sm font-medium mt-0.5">Téléchargez depuis votre galerie ou YouTube</p>
                 </div>
             </div>
 
             <!-- Form -->
             <div class="p-6 md:p-8 bg-white/50">
-                <form method="post" class="space-y-6">
+                <form method="post" enctype="multipart/form-data" class="space-y-6">
                     {% csrf_token %}
                     
                     <!-- Title & Category -->
@@ -62,18 +62,53 @@
                             placeholder="Décrivez le contenu de la vidéo..."></textarea>
                     </div>
 
-                    <!-- Video URL -->
-                    <div>
-                        <label class="block text-sm font-bold text-primary mb-2 flex items-center gap-1">
-                            Lien YouTube <span class="text-error">*</span>
-                        </label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline-variant">link</span>
-                            <input type="url" name="video_url" required
-                                class="w-full pl-12 pr-4 py-3 border border-outline-variant rounded-xl text-sm bg-surface-container-lowest focus:outline-none focus:border-surface-tint focus:ring-4 focus:ring-surface-tint/15 transition-all"
-                                placeholder="https://www.youtube.com/watch?v=...">
+                    <!-- Video Source: Upload OR URL -->
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-primary mb-3">
+                                Source de la vidéo <span class="text-error">*</span>
+                            </label>
+                            
+                            <!-- Tabs for Upload vs URL -->
+                            <div class="flex gap-2 mb-4 bg-surface-container rounded-xl p-1">
+                                <button type="button" class="upload-tab active flex-1 px-4 py-2 rounded-lg font-bold text-sm transition-all bg-primary text-white" data-tab="upload">
+                                    <span class="material-symbols-outlined align-middle mr-1" style="font-size:18px">cloud_upload</span>
+                                    Télécharger
+                                </button>
+                                <button type="button" class="upload-tab flex-1 px-4 py-2 rounded-lg font-bold text-sm transition-all text-on-surface-variant hover:bg-surface-container-high" data-tab="url">
+                                    <span class="material-symbols-outlined align-middle mr-1" style="font-size:18px">link</span>
+                                    Lien YouTube
+                                </button>
+                            </div>
+
+                            <!-- Upload Tab -->
+                            <div id="upload-panel" class="upload-panel active">
+                                <div id="video-dropzone" class="border-2 border-dashed border-outline-variant rounded-xl p-8 text-center bg-surface-container-lowest hover:border-primary hover:bg-primary/5 transition-all cursor-pointer">
+                                    <input type="file" id="video-file" name="video_file" accept="video/*" class="hidden">
+                                    <div class="space-y-2">
+                                        <div class="material-symbols-outlined text-4xl text-primary mx-auto">cloud_upload</div>
+                                        <p class="font-bold text-on-surface">Déposez votre vidéo ici</p>
+                                        <p class="text-sm text-on-surface-variant">ou cliquez pour sélectionner un fichier</p>
+                                        <p class="text-xs text-on-surface-variant/60 mt-2">Formats supportés : MP4, WebM, Ogg (Max 500 MB)</p>
+                                    </div>
+                                </div>
+                                <div id="file-status" class="mt-3 hidden p-3 rounded-lg bg-success-container border border-success">
+                                    <p id="file-name" class="text-sm font-bold text-on-success-container"></p>
+                                    <p id="file-size" class="text-xs text-on-success-container/70"></p>
+                                </div>
+                            </div>
+
+                            <!-- URL Tab -->
+                            <div id="url-panel" class="upload-panel hidden">
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline-variant">link</span>
+                                    <input type="url" name="video_url"
+                                        class="w-full pl-12 pr-4 py-3 border border-outline-variant rounded-xl text-sm bg-surface-container-lowest focus:outline-none focus:border-surface-tint focus:ring-4 focus:ring-surface-tint/15 transition-all"
+                                        placeholder="https://www.youtube.com/watch?v=...">
+                                </div>
+                                <p class="text-xs text-on-surface-variant mt-2">Le lien doit être un lien YouTube valide pour le lecteur intégré.</p>
+                            </div>
                         </div>
-                        <p class="text-xs text-on-surface-variant mt-2">Le lien doit être un lien YouTube valide pour le lecteur intégré.</p>
                     </div>
 
                     <!-- Advanced: Cover Color -->
@@ -103,4 +138,85 @@
         </div>
     </div>
 </div>
+
+<script>
+// Upload tab management
+document.querySelectorAll('.upload-tab').forEach(tab => {
+    tab.addEventListener('click', (e) => {
+        e.preventDefault();
+        const tabName = tab.dataset.tab;
+        
+        // Update active tab
+        document.querySelectorAll('.upload-tab').forEach(t => {
+            t.classList.remove('active', 'bg-primary', 'text-white');
+            t.classList.add('text-on-surface-variant', 'hover:bg-surface-container-high');
+        });
+        tab.classList.add('active', 'bg-primary', 'text-white');
+        tab.classList.remove('text-on-surface-variant', 'hover:bg-surface-container-high');
+        
+        // Update panel
+        document.querySelectorAll('.upload-panel').forEach(panel => panel.classList.add('hidden'));
+        document.getElementById(tabName + '-panel').classList.remove('hidden');
+    });
+});
+
+// File upload handling
+const dropzone = document.getElementById('video-dropzone');
+const fileInput = document.getElementById('video-file');
+
+// Click to select file
+dropzone.addEventListener('click', () => fileInput.click());
+
+// Drag and drop
+dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('border-primary', 'bg-primary/10');
+});
+
+dropzone.addEventListener('dragleave', () => {
+    dropzone.classList.remove('border-primary', 'bg-primary/10');
+});
+
+dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('border-primary', 'bg-primary/10');
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        fileInput.files = files;
+        updateFileStatus();
+    }
+});
+
+// File selection handling
+fileInput.addEventListener('change', updateFileStatus);
+
+function updateFileStatus() {
+    const file = fileInput.files[0];
+    const statusDiv = document.getElementById('file-status');
+    
+    if (file) {
+        const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        document.getElementById('file-name').textContent = file.name;
+        document.getElementById('file-size').textContent = `Taille : ${sizeMB} MB`;
+        statusDiv.classList.remove('hidden');
+    } else {
+        statusDiv.classList.add('hidden');
+    }
+}
+
+// Form submission - ensure we have either a file or URL
+document.querySelector('form').addEventListener('submit', (e) => {
+    const uploadTab = document.querySelector('.upload-tab[data-tab="upload"]');
+    const isUploadMode = uploadTab.classList.contains('active');
+    
+    const hasFile = fileInput.files.length > 0;
+    const hasURL = document.querySelector('input[name="video_url"]').value.trim();
+    
+    if (!hasFile && !hasURL) {
+        e.preventDefault();
+        alert('Veuillez télécharger un fichier vidéo ou fournir un lien YouTube');
+    }
+});
+</script>
 {% endblock %}

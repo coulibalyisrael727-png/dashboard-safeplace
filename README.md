@@ -4,63 +4,41 @@
 
 Ce microservice est une application Django indépendante qui sert de tableau de bord administratif pour The SafePlace. Il communique avec l'application principale via des API REST.
 
-## 🏗️ Architecture
+## 🏗️ Architecture Découplée
 
-### Séparation des services
-- **Application principale** (port 8000) : Gestion des podcasts, épisodes, donations
-- **Dashboard microservice** (port 8001) : Interface d'administration et analytics
+Ce microservice est une application Django indépendante hébergée sur **Netlify**. Elle communique avec le backend `podcastSafe` via des API REST.
 
-### Communication
-- Le dashboard fait des appels API vers l'application principale
-- Authentification via tokens de session
-- CORS configuré pour la communication inter-services
+### Flux de données
+- **Frontend** : Django templates rendus par le microservice.
+- **Backend API** : L'application principale fournit les données.
+- **Proxy Netlify** : Le fichier `netlify.toml` redirige les appels `/api/*` vers le backend pour éviter les erreurs CORS.
 
-## 🚀 Installation
+## 🚀 Installation Locale
 
 ### Prérequis
 - Python 3.11+
-- pip
+- Un backend `podcastSafe` en cours d'exécution (port 8000).
 
-### Installation
+### Lancement
 ```bash
-# Cloner le projet
 cd dashboard-service
-
-# Créer l'environnement virtuel
 python -m venv venv
-
-# Activer l'environnement
-# Windows
-venv\Scripts\Activate.ps1
-# Linux/Mac
-source venv/bin/activate
-
-# Installer les dépendances
+# Activer l'environnement (Windows: venv\Scripts\activate)
 pip install -r requirements.txt
-
-# Configurer les variables d'environnement
 cp .env.example .env
-# Éditer .env avec vos configurations
-
-# Appliquer les migrations
+# Configurer MAIN_API_URL=http://localhost:8000/api/v1/
 python manage.py migrate
-
-# Créer un superutilisateur
-python manage.py createsuperuser
-
-# Démarrer le serveur
 python manage.py runserver 8001
 ```
 
-## 🔧 Configuration
+## 🌐 Déploiement (Netlify)
 
-### Variables d'environnement
-```env
-SECRET_KEY=votre-clé-secrète-django
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-MAIN_APP_API_URL=http://localhost:8000/api/v1/
-```
+1. **GitHub** : Poussez ce dossier (`dashboard-service`) dans son propre dépôt.
+2. **Netlify** : Créez un nouveau site à partir de ce dépôt.
+3. **Configuration** : Netlify utilisera automatiquement `netlify.toml`.
+4. **Variables d'environnement** :
+   - `MAIN_API_URL` : L'URL de votre backend Django en production.
+   - `DASHBOARD_API_KEY` : La clé secrète identique à celle du backend.
 
 ### Ports par défaut
 - Dashboard : http://localhost:8001
@@ -85,8 +63,9 @@ MAIN_APP_API_URL=http://localhost:8000/api/v1/
 
 ### Authentification
 - Login requis pour accéder au dashboard
-- Tokens de session pour l'API
+- API Key authentication pour la communication avec le site principal
 - CORS configuré pour les origines autorisées
+- La clé API `DASHBOARD_API_KEY` doit correspondre entre les deux services
 
 ### Permissions
 - Seuls les utilisateurs authentifiés peuvent accéder aux données

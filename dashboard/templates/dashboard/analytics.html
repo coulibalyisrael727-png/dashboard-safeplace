@@ -37,11 +37,11 @@
         </div>
 
         <div class="bg-surface/80 backdrop-blur-xl border border-outline-variant/50 rounded-2xl p-6 hover:-translate-y-1 hover:shadow-lg transition-all animate-fade-in-up" style="animation-delay: 0.2s">
-            <div class="w-10 h-10 rounded-xl bg-primary-fixed flex items-center justify-center mb-3">
-                <span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1">payments</span>
+            <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center mb-3">
+                <span class="material-symbols-outlined text-blue-700" style="font-variation-settings:'FILL' 1">mail</span>
             </div>
-            <p class="text-xs font-medium text-on-surface-variant mb-1">Dons Récoltés</p>
-            <p class="text-2xl font-bold text-primary font-heading">€{{ analytics.total_donations|default:"0" }}</p>
+            <p class="text-xs font-medium text-on-surface-variant mb-1">Messages reçus</p>
+            <p class="text-2xl font-bold text-primary font-heading">{{ analytics.total_messages|default:"0" }}</p>
         </div>
 
         <div class="bg-surface/80 backdrop-blur-xl border border-outline-variant/50 rounded-2xl p-6 hover:-translate-y-1 hover:shadow-lg transition-all animate-fade-in-up" style="animation-delay: 0.3s">

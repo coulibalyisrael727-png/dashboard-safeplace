@@ -107,15 +107,6 @@
       <span class="sp-stat-growth">+{{ recent_stats.new_episodes|default:0 }} ce mois</span>
       <div class="sp-stat-bar-track"><div class="sp-stat-bar-fill" data-w="50"></div></div>
     </div>
-    <div class="sp-stat-card">
-      <div class="sp-stat-header">
-        <span class="sp-stat-label">Dons reçus</span>
-        <span class="sp-stat-icon">payments</span>
-      </div>
-      <span class="sp-stat-number" id="sp-count-3" data-target="{{ stats.total_donations|default:0 }}" data-prefix="€">€0</span>
-      <span class="sp-stat-growth">+€{{ recent_stats.recent_donations_amount|default:0 }} ce mois</span>
-      <div class="sp-stat-bar-track"><div class="sp-stat-bar-fill" data-w="65"></div></div>
-    </div>
   </section>
 
   <!-- Two-column layout -->
@@ -156,32 +147,6 @@
             <div class="sp-empty-icon">podcasts</div>
             <h4>Aucun épisode pour l'instant</h4>
             <p>Publiez votre premier épisode depuis le bouton ci-dessus.</p>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-
-      <!-- Recent Donations -->
-      <div class="sp-card">
-        <div class="sp-card-title">
-          Derniers Dons
-          <a href="{% url 'donation_management' %}" class="sp-card-link">Voir tout →</a>
-        </div>
-        <div class="sp-ep-list">
-          {% for don in recent_data.recent_donations %}
-          <div class="sp-ep-item">
-            <div class="sp-ep-thumb" style="background:linear-gradient(135deg,#0b3d2e,#416900);font-family:inherit;font-size:18px;font-weight:700">{{ don.name|first|upper }}</div>
-            <div class="sp-ep-info">
-              <h4>{{ don.name }}</h4>
-              <p>{{ don.email }} · {{ don.created_at }}</p>
-            </div>
-            <span style="font-weight:800;color:var(--sp-forest)">€{{ don.amount }}</span>
-          </div>
-          {% empty %}
-          <div class="sp-empty">
-            <div class="sp-empty-icon">volunteer_activism</div>
-            <h4>Aucun don reçu</h4>
-            <p>Les dons apparaîtront ici dès réception.</p>
           </div>
           {% endfor %}
         </div>

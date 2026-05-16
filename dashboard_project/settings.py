@@ -127,6 +127,15 @@ LOGIN_REDIRECT_URL = '/'
 # Main App API Configuration
 MAIN_API_URL = os.environ.get('MAIN_API_URL', 'http://127.0.0.1:8000/api/v1/')
 MAIN_SITE_URL = os.environ.get('MAIN_SITE_URL', 'http://127.0.0.1:8000')
+DASHBOARD_API_KEY = os.environ.get('DASHBOARD_API_KEY', 'safeplace_secret_dashboard_key_2026')
 
 # Mock API data for Vercel deployment (set to False when main app is available)
-MOCK_API_DATA = os.environ.get('MOCK_API_DATA', 'True') == 'True'
+MOCK_API_DATA = os.environ.get('MOCK_API_DATA', 'False') == 'True'
+
+# CORS settings for dashboard (if needed for webhooks)
+CORS_ALLOW_ALL_ORIGINS = True
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+    os.environ.get('MAIN_SITE_URL', 'http://127.0.0.1:8000').rstrip('/'),
+]

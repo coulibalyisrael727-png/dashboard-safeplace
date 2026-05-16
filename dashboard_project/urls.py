@@ -16,9 +16,6 @@ urlpatterns = [
     path('lives/', views.live_management, name='live_management'),
     path('lives/<int:pk>/delete/', views.live_delete, name='live_delete'),
 
-    # Donations
-    path('donations/', views.donation_management, name='donation_management'),
-
     # Messages
     path('messages/', views.message_management, name='message_management'),
     path('messages/<int:pk>/<str:action>/', views.message_action, name='message_action'),

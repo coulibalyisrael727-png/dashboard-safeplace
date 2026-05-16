@@ -86,9 +86,6 @@
             <a href="{% url 'live_management' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 {% if request.resolver_match.url_name == 'live_management' %}bg-lime/15 text-lime{% else %}text-white/60 hover:bg-white/8 hover:text-white/90{% endif %}">
                 <span class="material-symbols-outlined text-xl">live_tv</span>Gérer Lives
             </a>
-            <a href="{% url 'donation_management' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 {% if request.resolver_match.url_name == 'donation_management' %}bg-lime/15 text-lime{% else %}text-white/60 hover:bg-white/8 hover:text-white/90{% endif %}">
-                <span class="material-symbols-outlined text-xl">volunteer_activism</span>Donations
-            </a>
             <a href="{% url 'message_management' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 {% if request.resolver_match.url_name == 'message_management' %}bg-lime/15 text-lime{% else %}text-white/60 hover:bg-white/8 hover:text-white/90{% endif %}">
                 <span class="material-symbols-outlined text-xl">mail</span>Messages
             </a>

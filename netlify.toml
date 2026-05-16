@@ -1,26 +1,11 @@
 [build]
-  command = "mkdir -p staticfiles && pip install -r requirements.txt && python manage.py collectstatic --noinput --clear"
-  publish = "staticfiles"
-
-[build.environment]
-  DJANGO_SETTINGS_MODULE = "dashboard_project.settings"
-  DJANGO_DEBUG = "False"
-  ALLOWED_HOSTS = "*.netlify.app,localhost,127.0.0.1"
-  SECRET_KEY = "production-secret-key-change-this-in-netlify-env-vars-2026"
-  MOCK_API_DATA = "True"
-
-[[redirects]]
-  from = "/static/*"
-  to = "/static/:splat"
-  status = 200
+  command = "python manage.py collectstatic --noinput && echo 'Static files collected'"
+  publish = "static"
 
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/django"
-  status = 200
-
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/django"
+  to = "https://{env:MAIN_API_URL}/api/:splat"
   status = 200
   force = true
+
+# Optional headers for CORS (Netlify adds automatically for redirects)

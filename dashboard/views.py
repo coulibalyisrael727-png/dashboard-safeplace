@@ -177,24 +177,53 @@ def dashboard_home(request):
 
 @login_required
 def video_export(request):
-    """Export vidéo vers le site principal"""
+    """Export vidéo vers le site principal (upload ou URL)"""
     if request.method == 'POST':
-        data = {
-            'title': request.POST.get('title', ''),
-            'description': request.POST.get('description', ''),
-            'episode_type': 'video',
-            'video_url': request.POST.get('video_url', ''),
-            'category_id': request.POST.get('category') or None,
-            'cover_color': request.POST.get('cover_color', '#00261b'),
-        }
+        title = request.POST.get('title', '')
+        description = request.POST.get('description', '')
+        category_id = request.POST.get('category') or None
+        cover_color = request.POST.get('cover_color', '#00261b')
+        
+        # Handle file upload OR URL
+        video_url = request.POST.get('video_url', '').strip()
+        video_file = request.FILES.get('video_file')
+        
+        if video_file:
+            # Upload file to backend
+            files_data = {'video_file': video_file}
+            result, success = _api_post('episodes/upload/', request, data={
+                'title': title,
+                'description': description,
+                'category_id': category_id,
+                'cover_color': cover_color,
+            }, files=files_data)
+            
+            if success:
+                messages.success(request, f'Vidéo "{title}" uploadée avec succès!')
+                return redirect('dashboard_home')
+            else:
+                messages.error(request, result.get('error', 'Erreur lors de l\'upload'))
+        
+        elif video_url:
+            # Use existing YouTube URL logic
+            data = {
+                'title': title,
+                'description': description,
+                'episode_type': 'video',
+                'video_url': video_url,
+                'category_id': category_id,
+                'cover_color': cover_color,
+            }
 
-        result, success = _api_post('episodes/create/', request, data=data)
+            result, success = _api_post('episodes/create/', request, data=data)
 
-        if success:
-            messages.success(request, f'Vidéo "{data["title"]}" exportée avec succès!')
-            return redirect('dashboard_home')
+            if success:
+                messages.success(request, f'Vidéo "{title}" exportée avec succès!')
+                return redirect('dashboard_home')
+            else:
+                messages.error(request, result.get('error', 'Erreur lors de l\'export'))
         else:
-            messages.error(request, result.get('error', 'Erreur lors de l\'export'))
+            messages.error(request, 'Veuillez télécharger un fichier ou fournir un lien YouTube')
 
     # Charger les catégories
     cats_data, _ = _api_get('categories/', request)
@@ -257,23 +286,6 @@ def episode_delete(request, pk):
 
 # ──────────────────────────────────────────────
 # Donations
-# ──────────────────────────────────────────────
-
-@login_required
-def donation_management(request):
-    """Gestion des donations — données réelles"""
-    status_filter = request.GET.get('status', '')
-    api_data, connected = _api_get('donations/', request, params={'status': status_filter} if status_filter else None)
-
-    context = {
-        'donations': api_data.get('donations', []),
-        'donation_stats': api_data.get('stats', {}),
-        'api_connected': connected,
-        'error_message': api_data.get('error') if not connected else None,
-    }
-    return render(request, 'dashboard/donations.html', context)
-
-
 # ──────────────────────────────────────────────
 # Messages
 # ──────────────────────────────────────────────
