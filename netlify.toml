@@ -1,6 +1,6 @@
 [build]
   command = "python manage.py collectstatic --noinput && echo 'Static files collected'"
-  publish = "static"
+  publish = "staticfiles"
 
 [[redirects]]
   from = "/api/*"
