@@ -10,4 +10,10 @@
   status = 200
   force = true
 
+# Global redirect to handle SPA routing / 404
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
 # Optional headers for CORS (Netlify adds automatically for redirects)
