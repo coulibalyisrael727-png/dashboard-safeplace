@@ -14,7 +14,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-dashboard-dev-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,dashboard-safeplace-4o77xo41w-coulibalyisrael727-pngs-projects.vercel.app').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,*, .vercel.app').split(',')
 
 # Application definition
 INSTALLED_APPS = [
